@@ -18,6 +18,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.ftd.smartshare.dto.DownloadRequestDto;
+import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
 public final class Api {
@@ -132,5 +133,54 @@ public final class Api {
 		}
 		return false;
     }
+    
+    
+    /**
+     * Get summar
+     *
+     * @param downloadRequestDto    JAXB annotated class representing the summary request (it's same as download)
+     * @return true if request was successful and false if unsuccessful
+     */
+    public static boolean getSummary(DownloadRequestDto summaryRequestDto) {
+    	try (
+    		//Connect to server
+    		Socket serverSocket = new Socket(HOST, PORT);
+			// Used to send to server
+			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
+			// Used to receive from server
+			BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+    	) {
+    		//Create marshllar for UploadReuqestDto to sent to server
+    		Marshaller marshaller = JAXBContext.newInstance(DownloadRequestDto.class).createMarshaller();
+    		Unmarshaller unmarshaller = JAXBContext.newInstance(SummaryDto.class).createUnmarshaller();
+    		StringWriter stringWriter = new StringWriter();
+    		
+    		//Tell server if we are uploaded or downloading
+    		out.write("Summary");
+    		out.newLine();
+    		out.flush();
 
+    		marshaller.marshal(summaryRequestDto, stringWriter);
+    		//Send UploadRequest to server
+    		out.write(stringWriter.toString()); // push request it to server
+			out.newLine(); // Push a new line
+			out.flush();
+			
+			if(in.readLine().equals("Summary Success")) {
+				SummaryDto summary = (SummaryDto) unmarshaller.unmarshal(new StringReader(in.readLine()));
+				System.out.println(summary.toString());
+			} else {
+				return false;
+			}
+
+    		return true;
+		} catch (IOException e) {
+			System.out.println("Summary Failed: IO");
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			System.out.println("Summary Faild: JAXB");
+			e.printStackTrace();
+		}
+		return false;
+    }
 }

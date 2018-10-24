@@ -15,6 +15,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.ftd.smartshare.dto.DownloadRequestDto;
+import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
 
@@ -86,6 +87,34 @@ public class SmartShareClientHandler implements Runnable {
 				}
 				
 				//Send back as uploadrequest //makes it simpler
+			} else if(message.equals("Summary")) { //If the client wants a summary
+				//get download request
+				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller.unmarshal(new StringReader(in.readLine()));
+				//System.out.println(downloadRequest.toString());
+				
+				//Send to SQLRequestHandler then send file to client
+				SummaryDto summaryFile = requestHandler.getSummary(downloadRequest);
+				if(summaryFile == null) {
+					//Download failed
+		    		out.write("Summary Failed");
+					out.newLine(); // Push a new line
+					out.flush();
+					
+				} else {
+					//Download success
+		    		out.write("Summary Success");
+					out.newLine(); // Push a new line
+					out.flush();
+					
+					System.out.println(summaryFile.toString());
+					
+					Marshaller sumMarshaller = JAXBContext.newInstance(SummaryDto.class).createMarshaller();
+					sumMarshaller.marshal(summaryFile, stringWriter);
+		    		//Send downloaded file to client
+		    		out.write(stringWriter.toString());
+					out.newLine(); // Push a new line
+					out.flush();
+				}
 			} else { //What the crap did the client ask for?
 				System.out.println("Error: Not Upload or Download: " + message);
 			}

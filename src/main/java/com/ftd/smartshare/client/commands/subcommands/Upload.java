@@ -10,6 +10,7 @@ import com.ftd.smartshare.dto.UploadRequestDto;
 import com.ftd.smartshare.utils.PasswordGenerator;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Option;
 
 @CommandLine.Command(
         description = "Uploads file using a given 'password', expiration (60 minutes by default), a max downloads (1 by default)",
@@ -24,11 +25,11 @@ public class Upload implements Runnable {
 
     @CommandLine.Parameters(arity="0", index = "1", description = "The password for the file")
     private String password = PasswordGenerator.generate();
-
-    @CommandLine.Parameters(arity="0", index = "2", description = "The expiration for the file")
+    
+    @Option(names = "-e", arity = "0..1", description = "The expiration for the file")
     private int expiration = 60; //minutes
-
-    @CommandLine.Parameters(arity="0", index = "3", description = "The maxmimum downloads for the file")
+    
+    @Option(names = "-m", arity = "0..1", description = "The maxmimum downloads for the file")
     private int maxDownloads = 1;
 
     public void run() {

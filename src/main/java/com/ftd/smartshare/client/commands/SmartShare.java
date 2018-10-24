@@ -1,6 +1,7 @@
 package com.ftd.smartshare.client.commands;
 
 import com.ftd.smartshare.client.commands.subcommands.Download;
+import com.ftd.smartshare.client.commands.subcommands.Summary;
 import com.ftd.smartshare.client.commands.subcommands.Upload;
 import picocli.CommandLine;
 
@@ -13,11 +14,16 @@ import picocli.CommandLine;
         customSynopsis = {
                 "\nsmartshare [-hV] [COMMAND]",
                 "smartshare [upload|u] <file> [password]",
-                "smartshare [download|d] <file> <password>\n"
+                "smartshare [upload|u] <file> [password] -e <expiration time>",
+                "smartshare [upload|u] <file> [password] -m <max downloads>",
+                "smartshare [upload|u] <file> [password] -e <expiration time> -m <max downloads>",
+                "smartshare [download|d] <file> <password>\n",
+                "smartshare [summary|s] <file> <password>\n"
         },
         subcommands = {
                 Download.class,
-                Upload.class
+                Upload.class,
+                Summary.class
         })
 public class SmartShare implements Runnable {
     public void run() {

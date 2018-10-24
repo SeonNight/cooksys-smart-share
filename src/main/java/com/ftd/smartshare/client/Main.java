@@ -7,13 +7,18 @@ class Main {
 
     public static void main(String[] args) {
 //        CommandLine.run(new SmartShare()); // Pass cli arguments here
-        CommandLine.run(new SmartShare(), "-h");
+//        CommandLine.run(new SmartShare(), "-h");
 //        CommandLine.run(new SmartShare(), "--version");
 //        CommandLine.run(new SmartShare(), "upload");
 //        CommandLine.run(new SmartShare(), "upload", "pom.xml");
 //        CommandLine.run(new SmartShare(), "upload", ".gitignore");
 //        CommandLine.run(new SmartShare(), "upload", "pom.xml", "password");
 //        CommandLine.run(new SmartShare(), "download", "pom.xml", "password");
+//        CommandLine.run(new SmartShare(), "download", "pom.xml", "password");
+//        CommandLine.run(new SmartShare(), "upload", "pom.xml", "password", "-m", "2");
+//        CommandLine.run(new SmartShare(), "download", "pom.xml", "passeee");
+        CommandLine.run(new SmartShare(), "summary", "pom.xml", "password");
+        //Need to test for: different passwords
     }
 
 }

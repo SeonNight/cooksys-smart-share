@@ -1,5 +1,8 @@
 package com.ftd.smartshare.dto;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -74,7 +77,7 @@ public class UploadRequestDto {
 
 	@Override
 	public String toString() {
-		return "UploadRequestDto [filename=" + filename + ", file.length=" + file.length + ", expirayTime="
-				+ expirayTime + ", maxDownloads=" + maxDownloads + ", password=" + password + "]";
+		return "UploadRequestDto [filename=" + filename + ", file=" + Arrays.toString(file) + ", expirayTime="
+				+ expirayTime + ", maxDownloads=" + maxDownloads + ", password=" + password  + "]";
 	}
 }
