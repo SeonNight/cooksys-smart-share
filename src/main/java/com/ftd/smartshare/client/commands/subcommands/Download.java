@@ -20,13 +20,12 @@ public class Download implements Runnable {
     private String password;
 
     public void run() {
-        //System.out.println("Downloading " + fileName);
+        System.out.println("Downloading " + fileName);
         //Download
         if(Api.download(new DownloadRequestDto(fileName, password))) {
-        	//System.out.println("Downloaded");
+        	System.out.println("Downloaded");
         } else {
-        	//System.out.println("Download Failed");
-        	
+        	System.out.println("Download Failed");
         }
     }
 

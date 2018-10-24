@@ -42,13 +42,11 @@ public class SQLRequestHandler {
 			
 			while (resultSet.next()) {
 				//Make sure it is not expired
-				//if(resultSet.getTimestamp("expiry_time").getTime() < (new Timestamp(System.currentTimeMillis()).getTime())) {
+				if( (new Timestamp(System.currentTimeMillis())).before(resultSet.getTimestamp("expiry_time")) ) {
 					downloadedFile = new UploadRequestDto();
 					downloadedFile.setFilename(resultSet.getString("file_name"));
 					downloadedFile.setFile(resultSet.getBytes("file"));
 					
-					System.out.println(resultSet.getBytes("file"));
-					/*
 					//If max downloads reached (after this download) delete
 					if(resultSet.getInt("max_downloads") <= resultSet.getInt("total_downloads")+1) {
 						PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM smartshare.files WHERE id = ?;");
@@ -66,7 +64,7 @@ public class SQLRequestHandler {
 					PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM smartshare.files WHERE id = ?;");
 					preparedStatement.setInt(1, resultSet.getInt("id"));
 					preparedStatement.execute();
-				}*/
+				}
 			}
 			
 		} catch (SQLException e) {
@@ -88,7 +86,14 @@ public class SQLRequestHandler {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				if (resultSet.getString("file_name").equals(uploadRequest.getFilename())) {
-					return false;
+					//If the file is expired, delete file and upload the new one
+					if( (new Timestamp(System.currentTimeMillis())).after(resultSet.getTimestamp("expiry_time")) ) {
+						preparedStatement = connection.prepareStatement("DELETE FROM smartshare.files WHERE id = ?;");
+						preparedStatement.setInt(1, resultSet.getInt("id"));
+						preparedStatement.execute();
+					} else {
+						return false;
+					}
 				}
 			}
 			

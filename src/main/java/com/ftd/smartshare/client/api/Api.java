@@ -64,8 +64,8 @@ public final class Api {
 			if(in.readLine().equals("Download Success")) {
 				UploadRequestDto uploadRequest = (UploadRequestDto) unmarshaller.unmarshal(new StringReader(in.readLine()));
 				try(
-					//OutputStream fileOutputStream = new FileOutputStream(new File(uploadRequest.getFilename()));
-					OutputStream fileOutputStream = new FileOutputStream(new File("OutputTest.xml"));
+					OutputStream fileOutputStream = new FileOutputStream(new File(uploadRequest.getFilename()));
+					//OutputStream fileOutputStream = new FileOutputStream(new File("OutputTest.txt"));
 				) {
 					fileOutputStream.write(uploadRequest.getFile());
 				} catch (IOException e) {

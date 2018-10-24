@@ -32,9 +32,9 @@ public class Upload implements Runnable {
     private int maxDownloads = 1;
 
     public void run() {
-        //System.out.println("Uploading: " + file.getAbsolutePath());
-        //System.out.println("Password will be printed below");
-        //System.out.println(password);
+        System.out.println("Uploading: " + file.getAbsolutePath());
+        System.out.println("Password will be printed below");
+        System.out.println(password);
         
         //Maximum expiration 1440 minutes (24 hours), Minimum is 1
         if(expiration > 1440 || expiration < 1) {
@@ -45,24 +45,29 @@ public class Upload implements Runnable {
         //What is in file
         byte[] bytes = null;
         //Check to make sure file exists
-        try (
-        		InputStream fileInputStream = new FileInputStream(file);
-        ) { 
-        	//Pull in bytes
-	        bytes = new byte[fileInputStream.available()];
-	        fileInputStream.read(bytes);
-		} catch (IOException e) {
-	        System.out.println("Opening file failed: ");
-	        e.printStackTrace();
-	        return;
-		}
-        
-        //Check to make sure file exists
-        if(Api.upload(new UploadRequestDto(file.getName(), bytes, expiration, maxDownloads, password))) {
-        	//System.out.println("Uploaded");
+        if(file.exists()) {
+	        try (
+	        		InputStream fileInputStream = new FileInputStream(file);
+	        ) { 
+	        	//Pull in bytes
+		        bytes = new byte[fileInputStream.available()];
+		        fileInputStream.read(bytes);
+	
+		        //Upload file
+		        if(Api.upload(new UploadRequestDto(file.getName(), bytes, expiration, maxDownloads, password))) {
+		        	System.out.println("Uploaded");
+		        } else {
+		        	System.out.println("Upload Failed");
+		        }
+			} catch (IOException e) {
+		        System.out.println("Opening file failed: ");
+		        e.printStackTrace();
+			}
         } else {
-        	//System.out.println("Upload Failed");
+        	System.out.println("Upload Failed");
         }
+        
+        
     }
 
 
