@@ -32,7 +32,7 @@ public class SQLRequestHandler {
 	 *                           request
 	 * @return return UploadRequestDto, return null if not found or expired
 	 */
-	public UploadRequestDto getFile(DownloadRequestDto downloadRequest) {
+	public synchronized UploadRequestDto getFile(DownloadRequestDto downloadRequest) {
 		UploadRequestDto downloadedFile = null;
 		try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);) {
 			// Get file with the given file_name and password
@@ -90,7 +90,7 @@ public class SQLRequestHandler {
 	 * @param uploadRequestDto JAXB annotated class representing the upload request
 	 * @return return true if uploaded, false if not uploaded
 	 */
-	public boolean setFile(UploadRequestDto uploadRequest) {
+	public synchronized boolean setFile(UploadRequestDto uploadRequest) {
 
 		try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);) {
 			// Check to make sure there isn't already a file with the same name
@@ -145,7 +145,7 @@ public class SQLRequestHandler {
 	 *                           request
 	 * @return return SummaryDto, return null if not found or expired
 	 */
-	public SummaryDto getSummary(DownloadRequestDto downloadRequest) {
+	public synchronized SummaryDto getSummary(DownloadRequestDto downloadRequest) {
 		SummaryDto summary = null;
 		try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);) {
 			String sql = "SELECT * FROM smartshare.files WHERE file_name = ? AND password = ? ;";

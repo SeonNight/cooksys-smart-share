@@ -26,10 +26,10 @@ public class Upload implements Runnable {
     @CommandLine.Parameters(arity="0", index = "1", description = "The password for the file")
     private String password = PasswordGenerator.generate();
     
-    @Option(names = {"-t", "--time" }, arity = "0..1", description = "Set how many minutes for the file to expire")
+    @Option(names = {"-t", "--time" } ,paramLabel = "expiration", arity = "0..1", description = "Set how many minutes for the file to expire")
     private int expiration = 60; //minutes
     
-    @Option(names = {"-d", "--downloads"}, arity = "0..1", description = "Set how many times the file can be downloaded")
+    @Option(names = {"-d", "--downloads"}, paramLabel = "maxDownloads", arity = "0..1", description = "Set how many times the file can be downloaded")
     private int maxDownloads = -1; //Default is no restrictions
 
     public void run() {
