@@ -18,7 +18,9 @@ import picocli.CommandLine;
         version = "v1.0",
         customSynopsis = {
                 "\nsmartshare [-hV] [COMMAND]",
-                "smartshare [upload|u] [OPTION]... <file> [password]",
+                "smartshare [upload|u] [OPTION]... <file> [password]\n"
+                + "  -d, --downloads Set how many minutes for the file to expire\n"
+                + "  -t, --time      Set how many times the file can be downloaded",
                 "smartshare [download|d] <file> <password>",
                 "smartshare [summary|s] <file> <password>\n"
         },
