@@ -1,6 +1,5 @@
 package com.ftd.smartshare.dto;
 
-import java.sql.Timestamp;
 import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -12,22 +11,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UploadRequestDto {
 	@XmlElement
-	private String filename; //name of file
+	private String filename; // name of file
 	@XmlElement
-	private byte[] file; //file
+	private byte[] file; // file
 	@XmlElement
-	private int expirayTime; //when will it die
+	private int expirayTime; // when will it die
 	@XmlElement
-	private int maxDownloads; //How many downloads it can do
+	private int maxDownloads; // How many downloads it can do
 	@XmlElement
-	private String password; //text, not null
-	
+	private String password; // text, not null
+
 	public UploadRequestDto() {
-		
+
 	}
 
-	public UploadRequestDto(String filename, byte[] file, int expirayTime, int maxDownloads,
-			String password) {
+	public UploadRequestDto(String filename, byte[] file, int expirayTime, int maxDownloads, String password) {
 		this.filename = filename;
 		this.file = file;
 		this.expirayTime = expirayTime;
@@ -78,6 +76,6 @@ public class UploadRequestDto {
 	@Override
 	public String toString() {
 		return "UploadRequestDto [filename=" + filename + ", file=" + Arrays.toString(file) + ", expirayTime="
-				+ expirayTime + ", maxDownloads=" + maxDownloads + ", password=" + password  + "]";
+				+ expirayTime + ", maxDownloads=" + maxDownloads + ", password=" + password + "]";
 	}
 }

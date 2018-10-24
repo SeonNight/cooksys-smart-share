@@ -26,11 +26,11 @@ public class Upload implements Runnable {
     @CommandLine.Parameters(arity="0", index = "1", description = "The password for the file")
     private String password = PasswordGenerator.generate();
     
-    @Option(names = "-e", arity = "0..1", description = "The expiration for the file")
+    @Option(names = {"-t", "--time" }, arity = "0..1", description = "Set how many minutes for the file to expire")
     private int expiration = 60; //minutes
     
-    @Option(names = "-m", arity = "0..1", description = "The maxmimum downloads for the file")
-    private int maxDownloads = 1;
+    @Option(names = {"-d", "--downloads"}, arity = "0..1", description = "Set how many times the file can be downloaded")
+    private int maxDownloads = -1; //Default is no restrictions
 
     public void run() {
         System.out.println("Uploading: " + file.getAbsolutePath());
@@ -61,8 +61,7 @@ public class Upload implements Runnable {
 		        	System.out.println("Upload Failed");
 		        }
 			} catch (IOException e) {
-		        System.out.println("Opening file failed: ");
-		        e.printStackTrace();
+	        	System.out.println("Upload Failed");
 			}
         } else {
         	System.out.println("Upload Failed");

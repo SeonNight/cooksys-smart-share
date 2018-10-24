@@ -18,107 +18,107 @@ import com.ftd.smartshare.dto.DownloadRequestDto;
 import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
-
 public class SmartShareClientHandler implements Runnable {
 	Socket clientSocket;
-	
+
 	public SmartShareClientHandler(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
-	
+
 	public void run() {
 		try (
-			// Used to send request to server
-			BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-			// Used to receive quotes from server
-			BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		) {
-			//Get information from client if it wants to upload or download
-			String message = in.readLine();
-			//Used for SQL requsts
+				// Used to send to client
+				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+				// Used to receive from client
+				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
+			// Used for SQL requsts
 			SQLRequestHandler requestHandler = new SQLRequestHandler();
-    		JAXBContext upContext = JAXBContext.newInstance(UploadRequestDto.class);
-			Unmarshaller upUnmarshaller = upContext.createUnmarshaller(); //Upload request
-			Marshaller upMarshaller = upContext.createMarshaller(); //Marshaller to send file data back to Client
-			Unmarshaller downUnmarshaller = JAXBContext.newInstance(DownloadRequestDto.class).createUnmarshaller(); //Download request
+			JAXBContext upContext = JAXBContext.newInstance(UploadRequestDto.class);
 
-    		StringWriter stringWriter = new StringWriter(); //To write to client
-    		
-			//If the client wasts an upload
-			if(message.equals("Upload")) {
-				//Get upload request
-				UploadRequestDto uploadRequest = (UploadRequestDto) upUnmarshaller.unmarshal(new StringReader(in.readLine()));
-				//System.out.println(uploadRequest.toString());
-				
-				//Send to SQLRequestHandler then send to client the upload status
-				if(requestHandler.setFile(uploadRequest)) {
-		    		out.write("Upload Success");
-					out.newLine(); // Push a new line
+			Unmarshaller upUnmarshaller = upContext.createUnmarshaller(); // Upload request
+			Unmarshaller downUnmarshaller = JAXBContext.newInstance(DownloadRequestDto.class).createUnmarshaller(); // Download
+
+			Marshaller upMarshaller = upContext.createMarshaller(); // Marshaller to send file data back to Client
+			Marshaller sumMarshaller = JAXBContext.newInstance(SummaryDto.class).createMarshaller(); // summary
+
+			StringWriter stringWriter = new StringWriter(); // To write to client
+
+			// Get information from Client on what the client wants to do
+			String message = in.readLine();
+
+			// If the client wasts an upload
+			if (message.equals("Upload")) {
+				// Get upload request
+				UploadRequestDto uploadRequest = (UploadRequestDto) upUnmarshaller
+						.unmarshal(new StringReader(in.readLine()));
+
+				// Send to SQLRequestHandler then send to client the upload status
+				if (requestHandler.setFile(uploadRequest)) {
+					out.write("Upload Success");
+					out.newLine();
 					out.flush();
 				} else {
-		    		out.write("Upload Failed");
-					out.newLine(); // Push a new line
+					out.write("Upload Failed");
+					out.newLine();
 					out.flush();
 				}
-			} else if(message.equals("Download")) { //If the client wants and download
-				//get download request
-				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller.unmarshal(new StringReader(in.readLine()));
-				//System.out.println(downloadRequest.toString());
-				
-				//Send to SQLRequestHandler then send file to client
+			} else if (message.equals("Download")) { // If the client wants and download
+				// get download request
+				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller
+						.unmarshal(new StringReader(in.readLine()));
+
+				// Send to SQLRequestHandler then send file to client
 				UploadRequestDto downloadedFile = requestHandler.getFile(downloadRequest);
-				if(downloadedFile == null) {
-					//Download failed
-		    		out.write("Download Failed");
-					out.newLine(); // Push a new line
+				if (downloadedFile == null) {
+					// Download failed
+					out.write("Download Failed");
+					out.newLine();
 					out.flush();
-					
+
 				} else {
-					//Download success
-		    		out.write("Download Success");
-					out.newLine(); // Push a new line
+					// Download success
+					out.write("Download Success");
+					out.newLine();
 					out.flush();
+
+					// Send downloaded file to client
 					upMarshaller.marshal(downloadedFile, stringWriter);
-					
-		    		//Send downloaded file to client
-		    		out.write(stringWriter.toString());
-					out.newLine(); // Push a new line
+					out.write(stringWriter.toString());
+					out.newLine();
 					out.flush();
 				}
-				
-				//Send back as uploadrequest //makes it simpler
-			} else if(message.equals("Summary")) { //If the client wants a summary
-				//get download request
-				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller.unmarshal(new StringReader(in.readLine()));
-				//System.out.println(downloadRequest.toString());
-				
-				//Send to SQLRequestHandler then send file to client
+
+				// Send back as uploadrequest //makes it simpler
+			} else if (message.equals("Summary")) { // If the client wants a summary
+				// get download request
+				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller
+						.unmarshal(new StringReader(in.readLine()));
+
+				// Send to SQLRequestHandler then send file to client
 				SummaryDto summaryFile = requestHandler.getSummary(downloadRequest);
-				if(summaryFile == null) {
-					//Download failed
-		    		out.write("Summary Failed");
-					out.newLine(); // Push a new line
+				if (summaryFile == null) {
+					// Download failed
+					out.write("Summary Failed");
+					out.newLine();
 					out.flush();
-					
+
 				} else {
-					//Download success
-		    		out.write("Summary Success");
-					out.newLine(); // Push a new line
+					// Download success
+					out.write("Summary Success");
+					out.newLine();
 					out.flush();
-					
-					System.out.println(summaryFile.toString());
-					
-					Marshaller sumMarshaller = JAXBContext.newInstance(SummaryDto.class).createMarshaller();
+
+					// Send summary to Client
 					sumMarshaller.marshal(summaryFile, stringWriter);
-		    		//Send downloaded file to client
-		    		out.write(stringWriter.toString());
+					out.write(stringWriter.toString());
 					out.newLine(); // Push a new line
 					out.flush();
 				}
-			} else { //What the crap did the client ask for?
-				System.out.println("Error: Not Upload or Download: " + message);
+			} else { // What the crap did the client ask for? (There is no reason for it to come
+						// here...)
+				System.out.println("Error: Not Upload, Download, or Summary: " + message);
 			}
-			
+
 		} catch (IOException e) {
 			System.out.println("Server Failed: IO");
 			e.printStackTrace();
