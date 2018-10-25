@@ -95,12 +95,12 @@ public class SmartShareClientHandler implements Runnable {
 
 				// Send back as uploadrequest //makes it simpler
 			} else if (message.equals("Summary")) { // If the client wants a summary
-				// get download request
-				DownloadRequestDto downloadRequest = (DownloadRequestDto) downUnmarshaller
+				// get summary request
+				DownloadRequestDto summaryRequest = (DownloadRequestDto) downUnmarshaller
 						.unmarshal(new StringReader(in.readLine()));
 
 				// Send to SQLRequestHandler then send file to client
-				SummaryDto summaryFile = requestHandler.getSummary(downloadRequest);
+				SummaryDto summaryFile = requestHandler.getSummary(summaryRequest);
 				if (summaryFile == null) {
 					// Download failed
 					out.write("Summary Failed");

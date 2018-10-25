@@ -54,18 +54,18 @@ public class SummaryDto {
 	@Override
 	public String toString() {
 		String values = " Time Created: " + timeCreated + "\n";
-		if(downloadsRemaining == -1) {
+		if (downloadsRemaining == -1) {
 			values += (" Downloads Remaining: Unlimited\n");
 		} else {
 			values += (" Downloads Remaining: " + downloadsRemaining + "\n");
 		}
-		
-		if(timeTilExpiration < 1) {
+
+		if (timeTilExpiration < 1) {
 			values += (" Time Until Expiration: <1 minutes");
 		} else {
 			values += (" Time Until Expiration: " + timeTilExpiration + " min");
 		}
-		
+
 		return values;
 	}
 }

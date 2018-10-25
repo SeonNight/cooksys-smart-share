@@ -20,6 +20,7 @@ public class Download implements Runnable {
     private String password;
 
     public void run() {
+    	//For each filename request
     	for(String fn : fileName) {
 	        System.out.println("Downloading " + fn);
 	        //Download

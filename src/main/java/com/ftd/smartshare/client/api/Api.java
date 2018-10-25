@@ -46,8 +46,9 @@ public final class Api {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
 				// Used to receive from server
 				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));) {
-			// Create marshllar for UploadReuqestDto to sent to server
+			// Create marshllar for Download request to send to server
 			Marshaller marshaller = JAXBContext.newInstance(DownloadRequestDto.class).createMarshaller();
+			// Unmarshaller for file that was received from server
 			Unmarshaller unmarshaller = JAXBContext.newInstance(FileDto.class).createUnmarshaller();
 			StringWriter stringWriter = new StringWriter();
 
@@ -98,8 +99,7 @@ public final class Api {
 				// Used to receive from server
 				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));) {
 			// Create marshllar for UploadReuqestDto to sent to server
-			JAXBContext context = JAXBContext.newInstance(UploadRequestDto.class);
-			Marshaller marshaller = context.createMarshaller();
+			Marshaller marshaller = JAXBContext.newInstance(UploadRequestDto.class).createMarshaller();
 			StringWriter stringWriter = new StringWriter();
 
 			// Tell server if we are uploading
@@ -139,8 +139,9 @@ public final class Api {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(serverSocket.getOutputStream()));
 				// Used to receive from server
 				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));) {
-			// Create marshllar for UploadReuqestDto to sent to server
+			// Create marshllar for summary request to send to server
 			Marshaller marshaller = JAXBContext.newInstance(DownloadRequestDto.class).createMarshaller();
+			// create unmarshaller for summary gotten from server
 			Unmarshaller unmarshaller = JAXBContext.newInstance(SummaryDto.class).createUnmarshaller();
 			StringWriter stringWriter = new StringWriter();
 
