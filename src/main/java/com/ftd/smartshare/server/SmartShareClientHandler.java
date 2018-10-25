@@ -15,11 +15,12 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.ftd.smartshare.dto.DownloadRequestDto;
+import com.ftd.smartshare.dto.FileDto;
 import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
 public class SmartShareClientHandler implements Runnable {
-	//Socket to client
+	// Socket to client
 	private Socket clientSocket;
 	// Used for SQL requsts
 	private SQLRequestHandler requestHandler;
@@ -35,13 +36,15 @@ public class SmartShareClientHandler implements Runnable {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 				// Used to receive from client
 				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
-			JAXBContext upContext = JAXBContext.newInstance(UploadRequestDto.class);
+			// Upload request unmarshaller
+			Unmarshaller upUnmarshaller = JAXBContext.newInstance(UploadRequestDto.class).createUnmarshaller();
+			// Download request unmarshaller
+			Unmarshaller downUnmarshaller = JAXBContext.newInstance(DownloadRequestDto.class).createUnmarshaller();
 
-			Unmarshaller upUnmarshaller = upContext.createUnmarshaller(); // Upload request
-			Unmarshaller downUnmarshaller = JAXBContext.newInstance(DownloadRequestDto.class).createUnmarshaller(); // Download
-
-			Marshaller upMarshaller = upContext.createMarshaller(); // Marshaller to send file data back to Client
-			Marshaller sumMarshaller = JAXBContext.newInstance(SummaryDto.class).createMarshaller(); // summary
+			// Marshaller to send file back to Client
+			Marshaller fileMarshaller = JAXBContext.newInstance(FileDto.class).createMarshaller();
+			// Summary to Send back to Client
+			Marshaller sumMarshaller = JAXBContext.newInstance(SummaryDto.class).createMarshaller();
 
 			StringWriter stringWriter = new StringWriter(); // To write to client
 
@@ -70,7 +73,7 @@ public class SmartShareClientHandler implements Runnable {
 						.unmarshal(new StringReader(in.readLine()));
 
 				// Send to SQLRequestHandler then send file to client
-				UploadRequestDto downloadedFile = requestHandler.getFile(downloadRequest);
+				FileDto downloadedFile = requestHandler.getFile(downloadRequest);
 				if (downloadedFile == null) {
 					// Download failed
 					out.write("Download Failed");
@@ -84,7 +87,7 @@ public class SmartShareClientHandler implements Runnable {
 					out.flush();
 
 					// Send downloaded file to client
-					upMarshaller.marshal(downloadedFile, stringWriter);
+					fileMarshaller.marshal(downloadedFile, stringWriter);
 					out.write(stringWriter.toString());
 					out.newLine();
 					out.flush();

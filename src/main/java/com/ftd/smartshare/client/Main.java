@@ -23,23 +23,30 @@ class Main {
         CommandLine.run(new SmartShare(), "download", "elfi", "password");
         CommandLine.run(new SmartShare(), "summary", "elfi", "password");
 
-        //Test upload, summary, download (Multiple files)
+        //Test upload, summary, download
         System.out.println("\n--Test Success--");
-        CommandLine.run(new SmartShare(), "upload", "-d", "2", ".gitignore", "password");
+        CommandLine.run(new SmartShare(), "upload", "-d", "1", ".gitignore", "password");
         CommandLine.run(new SmartShare(), "summary", ".gitignore", "password");
         CommandLine.run(new SmartShare(), "download", ".gitignore", "password");
-        CommandLine.run(new SmartShare(), "upload", "-t", "2", "-d", "1", "pom.xml", "password");
-        CommandLine.run(new SmartShare(), "summary", "pom.xml", "password");
-        CommandLine.run(new SmartShare(), "download", "pom.xml", "password");
-        CommandLine.run(new SmartShare(), "download", ".gitignore", "password");
         
+        /*
+        //Test upload, summary, download for mutiple files
+        System.out.println("\n--Test Success Mult--");
+        CommandLine.run(new SmartShare(), "upload", "-t", "2", "-d", "1", ".gitignore,pom.xml", "password");
+        CommandLine.run(new SmartShare(), "summary", ".gitignore", "password");
+        CommandLine.run(new SmartShare(), "summary", "pom.xml", "password");
+        CommandLine.run(new SmartShare(), "download", ".gitignore,pom.xml", "password");
+        */
+        
+        /*
         //Threading Test
         System.out.println("\n--Threading--");
-        CommandLine.run(new SmartShare(), "upload", "-t", "2", "-d", "5", "pom.xml", "password");
+        CommandLine.run(new SmartShare(), "upload", "-t", "2", "-d", "5", "pom.xml,.gitignore", "password");
 
     	for(int i = 0; i < 10; i++) {
     		new Thread(new MultiClient("download", "pom.xml", "password")).start();
     	}
+    	*/
     }
 
 }

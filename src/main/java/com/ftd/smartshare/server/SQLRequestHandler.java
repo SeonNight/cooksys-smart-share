@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import com.ftd.smartshare.dto.DownloadRequestDto;
+import com.ftd.smartshare.dto.FileDto;
 import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
@@ -30,10 +31,10 @@ public class SQLRequestHandler {
 	 *
 	 * @param downloadRequestDto JAXB annotated class representing the download
 	 *                           request
-	 * @return return UploadRequestDto, return null if not found or expired
+	 * @return return FileDto, return null if not found or expired
 	 */
-	public synchronized UploadRequestDto getFile(DownloadRequestDto downloadRequest) {
-		UploadRequestDto downloadedFile = null;
+	public synchronized FileDto getFile(DownloadRequestDto downloadRequest) {
+		FileDto downloadedFile = null;
 		try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);) {
 			// Get file with the given file_name and password
 			String sqlReturn = "SELECT * FROM smartshare.files WHERE file_name = ? AND password = ? ;";
@@ -46,7 +47,7 @@ public class SQLRequestHandler {
 				// Make sure it is not expired
 				if ((new Timestamp(System.currentTimeMillis())).before(resultSet.getTimestamp("expiry_time"))) {
 					// get download information
-					downloadedFile = new UploadRequestDto();
+					downloadedFile = new FileDto();
 					downloadedFile.setFilename(resultSet.getString("file_name"));
 					downloadedFile.setFile(resultSet.getBytes("file"));
 

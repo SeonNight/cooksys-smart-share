@@ -18,6 +18,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.ftd.smartshare.dto.DownloadRequestDto;
+import com.ftd.smartshare.dto.FileDto;
 import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
@@ -47,7 +48,7 @@ public final class Api {
 				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));) {
 			// Create marshllar for UploadReuqestDto to sent to server
 			Marshaller marshaller = JAXBContext.newInstance(DownloadRequestDto.class).createMarshaller();
-			Unmarshaller unmarshaller = JAXBContext.newInstance(UploadRequestDto.class).createUnmarshaller();
+			Unmarshaller unmarshaller = JAXBContext.newInstance(FileDto.class).createUnmarshaller();
 			StringWriter stringWriter = new StringWriter();
 
 			// Tell server if we are downloading
@@ -63,14 +64,11 @@ public final class Api {
 
 			// If download was successful get files
 			if (in.readLine().equals("Download Success")) {
-				UploadRequestDto uploadRequest = (UploadRequestDto) unmarshaller
-						.unmarshal(new StringReader(in.readLine()));
+				FileDto downloadedFile = (FileDto) unmarshaller.unmarshal(new StringReader(in.readLine()));
 				// Put files gotten from server onto client computer
-				try (OutputStream fileOutputStream = new FileOutputStream(new File(uploadRequest.getFilename()));) {
-					fileOutputStream.write(uploadRequest.getFile());
-				} catch (IOException e) {
-					System.out.println("Client File Output Failed");
-					e.printStackTrace();
+				try (OutputStream fileOutputStream = new FileOutputStream(new File(downloadedFile.getFilename()));) {
+					fileOutputStream.write(downloadedFile.getFile());
+				} catch (IOException e) { // If something goes wrong
 					return false;
 				}
 			} else { // fail equals false
