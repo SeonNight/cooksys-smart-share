@@ -7,10 +7,12 @@ public class SmartShareServer {
 	private static final int PORT = 3000;
 
 	public static void main(String[] args) {
+		//Handler for SQL connections
+		SQLRequestHandler requestHandler = new SQLRequestHandler();
 		try (ServerSocket serverSocket = new ServerSocket(PORT);) {
 			while (true) {
 				try {
-					new Thread(new SmartShareClientHandler(serverSocket.accept())).start();
+					new Thread(new SmartShareClientHandler(serverSocket.accept(),requestHandler)).start();
 				} catch (IOException e) {
 					System.out.println("Server Connection Failed: ");
 					e.printStackTrace();

@@ -112,21 +112,19 @@ public class SQLRequestHandler {
 				}
 			}
 
-			sql = "INSERT INTO smartshare.files (id, file_name,"
-					+ "file, time_created, expiry_time, max_downloads, total_downloads, password) VALUES"
-					+ "(?, ?, ?, ?, ?, ?, ? ,?);";
+			sql = "INSERT INTO smartshare.files (file_name, file, time_created, expiry_time, max_downloads, total_downloads, password) VALUES"
+					+ "(?, ?, ?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, 1); // Set this to serial?
-			preparedStatement.setString(2, uploadRequest.getFilename());
-			preparedStatement.setBytes(3, uploadRequest.getFile()); // File
-			preparedStatement.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-			preparedStatement.setTimestamp(5,
+			preparedStatement.setString(1, uploadRequest.getFilename());
+			preparedStatement.setBytes(2, uploadRequest.getFile()); // File
+			preparedStatement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+			preparedStatement.setTimestamp(4,
 					new Timestamp(System.currentTimeMillis() + (uploadRequest.getExpirayTime() * 60000))); // int to
 																											// mili (in
 																											// minutes)
-			preparedStatement.setInt(6, uploadRequest.getMaxDownloads()); // max_downloads;
-			preparedStatement.setInt(7, 0);
-			preparedStatement.setString(8, uploadRequest.getPassword());
+			preparedStatement.setInt(5, uploadRequest.getMaxDownloads()); // max_downloads;
+			preparedStatement.setInt(6, 0);
+			preparedStatement.setString(7, uploadRequest.getPassword());
 
 			preparedStatement.executeUpdate();
 
@@ -145,7 +143,7 @@ public class SQLRequestHandler {
 	 *                           request
 	 * @return return SummaryDto, return null if not found or expired
 	 */
-	public synchronized SummaryDto getSummary(DownloadRequestDto downloadRequest) {
+	public SummaryDto getSummary(DownloadRequestDto downloadRequest) {
 		SummaryDto summary = null;
 		try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);) {
 			String sql = "SELECT * FROM smartshare.files WHERE file_name = ? AND password = ? ;";
@@ -167,11 +165,6 @@ public class SQLRequestHandler {
 					summary.setTimeTilExpiration(((int) (new Timestamp(
 							resultSet.getTimestamp("expiry_time").getTime() - System.currentTimeMillis()).getTime()))
 							/ 60000);
-				} else { // If it has expired delete entry
-					sql = "DELETE FROM smartshare.files WHERE id = ?;";
-					PreparedStatement preparedStatement = connection.prepareStatement(sql);
-					preparedStatement.setInt(1, resultSet.getInt("id"));
-					preparedStatement.execute();
 				}
 			}
 		} catch (SQLException e) {

@@ -19,10 +19,14 @@ import com.ftd.smartshare.dto.SummaryDto;
 import com.ftd.smartshare.dto.UploadRequestDto;
 
 public class SmartShareClientHandler implements Runnable {
-	Socket clientSocket;
+	//Socket to client
+	private Socket clientSocket;
+	// Used for SQL requsts
+	private SQLRequestHandler requestHandler;
 
-	public SmartShareClientHandler(Socket clientSocket) {
+	public SmartShareClientHandler(Socket clientSocket, SQLRequestHandler requestHandler) {
 		this.clientSocket = clientSocket;
+		this.requestHandler = requestHandler;
 	}
 
 	public void run() {
@@ -31,8 +35,6 @@ public class SmartShareClientHandler implements Runnable {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 				// Used to receive from client
 				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));) {
-			// Used for SQL requsts
-			SQLRequestHandler requestHandler = new SQLRequestHandler();
 			JAXBContext upContext = JAXBContext.newInstance(UploadRequestDto.class);
 
 			Unmarshaller upUnmarshaller = upContext.createUnmarshaller(); // Upload request

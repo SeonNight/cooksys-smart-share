@@ -15,7 +15,7 @@ public class Summary implements Runnable {
 	@CommandLine.Parameters(arity="1", index = "0", description = "Name of file to be loaded")
 	private String fileName;
 	
-	@CommandLine.Parameters(arity="0", index = "1", description = "The password for the file")
+	@CommandLine.Parameters(arity="1", index = "1", description = "The password for the file")
 	private String password = PasswordGenerator.generate();
 	
 	public void run() {
